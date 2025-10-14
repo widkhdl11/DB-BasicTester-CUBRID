@@ -1,12 +1,11 @@
-# DB-BasicTester
-
-Shell Script 기반 데이터베이스 테스트 자동화 도구
+# DB-BasicTester-CUBRID
+Shell Script 기반 CUBRID 테스트 자동화 도구
 
 ---
 
 ## 프로젝트 소개
 
-SQLite를 사용한 데이터베이스 자동 테스트 프로그램
+CUBRID를 사용한 데이터베이스 자동 테스트 프로그램
 CRUD, 트랜잭션, 동시성 등 실제 DB 환경에서 발생할 수 있는 다양한 시나리오를 테스트합니다.
 
 ---
@@ -14,7 +13,7 @@ CRUD, 트랜잭션, 동시성 등 실제 DB 환경에서 발생할 수 있는 �
 ## 기술 스택
 
 - Shell Script (Bash)
-- SQLite3
+- CUBRID
 - JSON/CSV 로깅
 
 ---
@@ -29,10 +28,10 @@ project/
 │   ├── logger.sh             # 로깅 함수
 │   └── utils.sh              # 유틸리티 함수
 └── tests/                     # 테스트케이스
-├── crud.sh               # CRUD 테스트
-├── integrity.sh          # 무결성 검증
-├── transaction.sh        # 트랜잭션 테스트
-└── concurrency.sh        # 동시성 테스트
+│   ├── crud.sh               # CRUD 테스트
+│   ├── integrity.sh          # 무결성 검증
+│   ├── transaction.sh        # 트랜잭션 테스트
+│   └── concurrency.sh        # 동시성 테스트
 
 ---
 
@@ -101,7 +100,7 @@ project/
 ### 요구사항
 - Linux/Unix 환경
 - Bash 4.0 이상
-- SQLite3
+- CUBRID
 - jq
 
 ## 실행 방법
