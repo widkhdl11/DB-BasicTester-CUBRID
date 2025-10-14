@@ -1,0 +1,18 @@
+./example.sh
+
+./test.sh
+./test.db
+
+
+# 데이터베이스 파일
+db/
+*.db
+
+# 로그 파일
+logs/
+*.log
+*.json
+
+# 리포트 파일  
+reports/
+*.csv
