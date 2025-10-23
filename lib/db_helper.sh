@@ -54,14 +54,25 @@ run_transaction(){
     local query="$1"
     local expected_success="${2:-true}"
     local query_result=""
+    query_result=$(csql -u dba --no-auto-commit testdb -q -c "SET TRANSACTION ISOLATION LEVEL REPEATABLE READ; $query COMMIT;" 2>&1)
+#     query_result=$(csql -u dba testdb -c <<EOF 2>&1
+# ;autocommit off
+# "$query"
+# ;autocommit on
+# EOF
+# -q )
+    # ;set isolation_level 5
+#     cat > ./tmp/query_$$.sql <<EOF
+#     SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+#     $query
+# EOF
 
-    query_result=$(csql -u dba testdb -q <<EOF 2>&1
-;autocommit off
-$query
-;autocommit on
-EOF
-)
-    result=$?
+#     query_result=$(csql -u dba testdb -i ./tmp/query_$$.sql 2>&1)
+#     result=$?
+
+#     echo "query_result : $query_result"
+    # rm ./tmp/query_$$.sql
+
 
     if [ "$expected_success" = "true" ]; then
         if [ $result -ne 0 ]; then
@@ -222,7 +233,7 @@ setup_tables(){
 
 print_table(){
     local table_name="$1"
-    local result=$(sqlite3 "$DB_FILE" "SELECT * FROM $table_name;" 2>&1)
+    local result=$(csql -u dba testdb -q -c "SELECT * FROM $table_name;" 2>&1)
 
     echo "$result"
 }

@@ -1,0 +1,5 @@
+    SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+    "
+    UPDATE users SET age=50 WHERE name='TestUser';
+    COMMIT;
+    "

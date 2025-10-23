@@ -98,7 +98,8 @@ main() {
 
     # # 동시성 테스트
     ## CUBRID의 자동락으로 인해 테스트 불가
-    # test_concurrent_inserts
+    test_concurrent_inserts
+
     test_update_conflicts
     ## CUBRID의 시스템으로 인해 타임아웃 발생하지 않음
     # test_deadlock_detection

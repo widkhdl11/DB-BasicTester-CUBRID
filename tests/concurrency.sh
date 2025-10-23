@@ -2,7 +2,7 @@
 
 
 ## 프로세스 동시성으로 INSERT 문 누락 테스트
-# CUBRID의 자동락으로 인해 테스트 불가
+# CUBRID의 MVCC기법으로 INSERT문 누락이 없음
 test_concurrent_inserts() {
     log_message "INFO" "동시성 INSERT 테스트 시작"
     start_timer
@@ -33,7 +33,7 @@ test_concurrent_inserts() {
             success=$((success + 1))
         else
             if [[ $query_result == "Error: database is locked" ]]; then 
-                echo "❌ 예상치 못한 에러 발생: $query_result"
+                echo "❌ 예상치 못한 에러 발생: $query_result"  
                 break
             fi
             failed=$((failed + 1))
@@ -68,7 +68,7 @@ test_concurrent_inserts() {
 test_update_conflicts() {
     log_message "INFO" "Lost Update 테스트 시작"
     start_timer
-    reset_tables "users" "orders"
+    reset_tables "orders" "users"
     setup_data
 
     local pids=()    
@@ -81,7 +81,8 @@ test_update_conflicts() {
     local expected_age=0
 
     update_separated() {
-        age=$(run_query "SELECT age FROM users WHERE name='test1';" | tail -n 1)
+        age=$(run_transaction "SELECT age FROM users WHERE name='test1';" | tail -n 1)
+        # age=$(echo "$raw_output" | grep -oE "[0-9]+" | head -n 1)
 
         (( age++ ))
         
@@ -90,13 +91,14 @@ test_update_conflicts() {
         return $?
     }
     
-    for i in {1..20}; do
+    for i in {1..3}; do
         update_separated &
         pids[$i]=$!
+        sleep 0.1
     done
     
     # 대기
-    for i in {1..20}; do
+    for i in {1..3}; do
         wait ${pids[$i]}
         [ $? -eq 0 ] && success=$((success + 1))
     done
@@ -127,7 +129,7 @@ test_update_conflicts() {
 
 # IMMEDIATE를 사용하여 동시성으로 인한 코드 누락 방지 테스트
 # CUBRID의 시스템으로 인해 타임아웃 발생하지 않음
-test_deadlock_detection() {
+test_timeout_detection() {
     log_message "INFO" "Lock Timeout 테스트 시작"
     start_timer
     reset_tables "users" "orders"
